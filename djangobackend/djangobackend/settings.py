@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,7 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-7l0s(3ivy!f&+pj7oa!44ny+f9^wy&n5tk2@j!xv!6n&et+b9l'
-
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -57,20 +59,28 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    ],
 }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Настройки Simple JWT
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer',),  # Тип токена должен быть "Bearer"
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Время жизни access токена
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),     # Время жизни refresh токена
+}
 
 ROOT_URLCONF = 'djangobackend.urls'
 

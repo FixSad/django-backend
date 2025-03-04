@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-class User(models.Model):
+
+class User(AbstractBaseUser):
     GENDER_CHOICES = [
         ('male', 'Мужской'),
         ('female', 'Женский'),
@@ -38,6 +40,8 @@ class User(models.Model):
     password = models.CharField(max_length=128, verbose_name="Пароль")
     additional_comments = models.TextField(blank=True, null=True, verbose_name="Дополнительные комментарии")
 
+
+    USERNAME_FIELD = 'email'
     def save(self, *args, **kwargs):
         if not self.password.startswith('pbkdf2_sha256$'):
             self.password = make_password(self.password)
